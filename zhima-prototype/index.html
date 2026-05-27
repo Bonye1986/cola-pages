@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>智马云中台管理系统 · 原型</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; overflow: hidden; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #F5F7FA; }
+    ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
+
+    .proto-element { position: relative; transition: all 0.2s ease; border-radius: 6px; }
+    .proto-element:hover { box-shadow: 0 0 0 2px #165DFF, 0 4px 12px rgba(22,93,255,0.15); background-color: rgba(22,93,255,0.03); }
+    .proto-element.active-highlight { box-shadow: 0 0 0 2px #165DFF, 0 4px 12px rgba(22,93,255,0.2); background-color: rgba(22,93,255,0.05); }
+
+    .proto-desc { transition: all 0.2s ease; border-radius: 6px; border: 1px solid #fde68a; background-color: #fffbeb; }
+    .proto-desc:hover { background-color: #fef3c7; border-color: #f59e0b; box-shadow: 0 2px 8px rgba(245,158,11,0.15); }
+    .proto-desc.active-highlight { background-color: #fde68a; border-color: #d97706; box-shadow: 0 2px 8px rgba(245,158,11,0.25); }
+
+    #connections { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
+    .connection-line { fill: none; stroke: #165DFF; stroke-width: 2; opacity: 0.6; transition: all 0.2s ease; }
+    .connection-line.active { stroke-width: 3; opacity: 1; }
+    .connection-label { fill: #fff; font-size: 12px; font-weight: bold; text-anchor: middle; dominant-baseline: central; }
+    .connection-label-bg { fill: #165DFF; }
+
+    .sidebar-item { transition: all 0.2s; cursor: pointer; }
+    .sidebar-item:hover { background-color: rgba(22,93,255,0.08); color: #165DFF; }
+    .sidebar-item.active { background-color: rgba(22,93,255,0.12); color: #165DFF; border-right: 3px solid #165DFF; }
+    .sidebar-item .icon-box { width: 20px; text-align: center; display: inline-flex; justify-content: center; }
+
+    .topnav-tab { transition: all 0.2s; cursor: pointer; padding: 12px 16px; color: #666; border-bottom: 2px solid transparent; font-size: 14px; white-space: nowrap; }
+    .topnav-tab:hover { color: #165DFF; }
+    .topnav-tab.active { color: #165DFF; border-bottom-color: #165DFF; font-weight: 500; }
+
+    .nav-card { transition: all 0.2s; cursor: pointer; border: 1px solid #e5e7eb; }
+    .nav-card:hover { border-color: #165DFF; box-shadow: 0 4px 16px rgba(22,93,255,0.1); transform: translateY(-2px); }
+
+    .quick-action { transition: all 0.2s; cursor: pointer; border: 1px solid #e5e7eb; }
+    .quick-action:hover { border-color: #165DFF; background-color: rgba(22,93,255,0.03); }
+
+    .tag { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
+    .tag-blue { background-color: rgba(22,93,255,0.1); color: #165DFF; }
+    .tag-green { background-color: rgba(0,180,42,0.1); color: #00B42A; }
+
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 200; transition: opacity 0.3s ease; }
+    .modal-hidden { opacity: 0; pointer-events: none; }
+    .modal-content { background: white; border-radius: 12px; padding: 24px; min-width: 400px; max-width: 90vw; transition: transform 0.3s ease, opacity 0.3s ease; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+    .modal-hidden .modal-content { transform: scale(0.95); opacity: 0; }
+
+    .btn-primary { background: #165DFF; color: white; padding: 8px 20px; border-radius: 6px; font-size: 14px; transition: all 0.2s; cursor: pointer; border: none; }
+    .btn-primary:hover { background: #0e42d6; }
+    .btn-primary:active { transform: scale(0.96); }
+    .form-input { border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 12px; font-size: 14px; width: 100%; transition: all 0.2s; outline: none; }
+    .form-input:focus { border-color: #165DFF; box-shadow: 0 0 0 3px rgba(22,93,255,0.1); }
+
+    .stat-card { background: white; border-radius: 10px; padding: 20px; border: 1px solid #e5e7eb; transition: all 0.2s; }
+    .stat-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+
+    @media (max-width: 768px) {
+      #app { flex-direction: column; }
+      #sidebar { display: none; }
+      #left-panel { width: 100% !important; height: 60vh; }
+      #divider { display: none; }
+      #right-panel { width: 100% !important; height: 40vh; border-top: 1px solid #e5e7eb; }
+      #connections { display: none; }
+      .mobile-toggle-btn { display: flex !important; }
+      .topnav-tabs { overflow-x: auto; }
+      .nav-grid { grid-template-columns: 1fr !important; }
+    }
+    .mobile-toggle-btn { display: none; position: fixed; bottom: 20px; right: 20px; z-index: 100; width: 48px; height: 48px; border-radius: 50%; background: #165DFF; color: white; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(22,93,255,0.3); cursor: pointer; border: none; }
+  </style>
+</head>
+<body class="bg-gray-50">
+
+  <button class="mobile-toggle-btn" id="mobileToggle" onclick="toggleMobileView()">
+    <i class="fas fa-info"></i>
+  </button>
+
+  <div id="app" class="flex h-screen relative">
+
+    <!-- 左侧：产品界面 -->
+    <div id="left-panel" class="w-[78%] overflow-y-auto bg-gray-50 relative">
+
+      <!-- 顶栏 -->
+      <header class="bg-white border-b border-gray-200 flex flex-col sticky top-0 z-10">
+        <div class="px-5 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-[#165DFF] rounded-lg flex items-center justify-center text-white font-bold text-sm">
+              <i class="fas fa-cloud"></i>
+            </div>
+            <h1 class="text-base font-semibold text-gray-800">智马云中台管理系统</h1>
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="text-sm text-gray-500"><i class="fas fa-user-circle mr-1"></i>超级管理员</span>
+            <button class="text-gray-400 hover:text-gray-600"><i class="fas fa-bell"></i></button>
+            <button class="text-gray-400 hover:text-gray-600"><i class="fas fa-cog"></i></button>
+          </div>
+        </div>
+        <!-- 顶部导航标签 -->
+        <div class="flex px-5 topnav-tabs border-t border-gray-100 overflow-x-auto">
+          <div class="topnav-tab active">工作台</div>
+          <div class="topnav-tab">成员与权限</div>
+          <div class="topnav-tab">用户管理</div>
+          <div class="topnav-tab">订单管理</div>
+          <div class="topnav-tab">产品管理</div>
+          <div class="topnav-tab">商品管理</div>
+          <div class="topnav-tab">运营管理</div>
+          <div class="topnav-tab">通知管理</div>
+          <div class="topnav-tab">操作日志</div>
+          <div class="topnav-tab">询盘管理</div>
+        </div>
+      </header>
+
+      <div class="flex">
+        <!-- 左侧菜单 -->
+        <aside id="sidebar" class="w-48 bg-white border-r border-gray-200 min-h-[calc(100vh-92px)]">
+          <nav class="py-3">
+            <div class="sidebar-item active px-4 py-2.5 flex items-center gap-3 text-sm" data-menu="工作台">
+              <span class="icon-box"><i class="fas fa-desktop text-[#165DFF]"></i></span> 工作台
+            </div>
+            <div class="sidebar-item px-4 py-2.5 flex items-center gap-3 text-sm text-gray-600" data-menu="成员与权限">
+              <span class="icon-box"><i class="fas fa-users-cog"></i></span> 成员与权限
+            </div>
+            <div class="sidebar-item px-4 py-2.5 flex items-center gap-3 text-sm text-gray-600" data-menu="用户管理">
+              <span class="icon-box"><i class="fas fa-user"></i></span> 用户管理
+            </div>
+            <div class="sidebar-item px-4 py-2.5 flex items-center gap-3 text-sm text-gray-600" data-menu="订单管理">
+              <span class="icon-box"><i class="fas fa-receipt"></i></span> 订单管理
+            </div>
+            <div class="sidebar-item px-4 py-2.5 flex items-center gap-3 text-sm text-gray-600" data-menu="产品管理">
+              <span class="icon-box"><i class="fas fa-cube"></i></span> 产品管理
+            </div>
+            <div class="sidebar-item px-4 py-2.5 flex items-center gap-3 text-sm text-gray-600" data-menu="商品管理">
+              <span class="icon-box"><i class="fas fa-box"></i></span> 商品管理
+            </div>
+            <div class="sidebar-item px-4 py-2.5 flex items-center gap-3 text-sm text-gray-600" data-menu="运营管理">
+              <span class="icon-box"><i class="fas fa-chart-line"></i></span> 运营管理
+            </div>
+            <div class="sidebar-item px-4 py-2.5 flex items-center gap-3 text-sm text-gray-600" data-menu="通知管理">
+              <span class="icon-box"><i class="fas fa-bell"></i></span> 通知管理
+            </div>
+            <div class="sidebar-item px-4 py-2.5 flex items-center gap-3 text-sm text-gray-600" data-menu="操作日志">
+              <span class="icon-box"><i class="fas fa-history"></i></span> 操作日志
+            </div>
+            <div class="sidebar-item px-4 py-2.5 flex items-center gap-3 text-sm text-gray-600" data-menu="询盘管理">
+              <span class="icon-box"><i class="fas fa-comments"></i></span> 询盘管理
+            </div>
+          </nav>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="flex-1 p-6">
+          <!-- 欢迎区 -->
+          <div class="mb-6">
+            <h2 class="text-xl font-semibold text-gray-800">欢迎回来，超级管理员 👋</h2>
+            <p class="text-sm text-gray-500 mt-1">今天是 2026年5月27日星期三，智马云平台运营数据概览</p>
+          </div>
+
+          <!-- 统计卡片 -->
+          <div class="grid grid-cols-4 gap-4 mb-6">
+            <div class="stat-card">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-sm text-gray-500">C端用户</span>
+                <span class="tag tag-blue">+12%</span>
+              </div>
+              <div class="text-2xl font-bold text-gray-800">12,847</div>
+              <div class="text-xs text-gray-400 mt-1">较上月增长</div>
+            </div>
+            <div class="stat-card">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-sm text-gray-500">B端租户</span>
+                <span class="tag tag-green">+5%</span>
+              </div>
+              <div class="text-2xl font-bold text-gray-800">386</div>
+              <div class="text-xs text-gray-400 mt-1">活跃租户数</div>
+            </div>
+            <div class="stat-card">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-sm text-gray-500">今日订单</span>
+              </div>
+              <div class="text-2xl font-bold text-gray-800">1,523</div>
+              <div class="text-xs text-gray-400 mt-1">待处理 47 笔</div>
+            </div>
+            <div class="stat-card">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-sm text-gray-500">SKU总数</span>
+              </div>
+              <div class="text-2xl font-bold text-gray-800">2,091</div>
+              <div class="text-xs text-gray-400 mt-1">在线 1,834</div>
+            </div>
+          </div>
+
+          <!-- ★ 连线1：系统导航模块 -->
+          <div class="proto-element p-4 -ml-1 -mt-1" data-proto-id="1">
+            <h3 class="text-base font-semibold text-gray-800 mb-4">系统导航</h3>
+            <div class="nav-grid grid grid-cols-3 gap-4">
+              <div class="nav-card bg-white rounded-lg p-4" onclick="showModal('用户管理系统 - 管理C端用户、B端租户、用户分群。支持批量导入导出，用户标签体系，分群规则配置。')">
+                <div class="flex items-center gap-3 mb-2">
+                  <div class="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center text-[#165DFF]"><i class="fas fa-users"></i></div>
+                  <span class="font-medium text-sm text-gray-800">用户管理系统</span>
+                </div>
+                <p class="text-xs text-gray-500 mb-2">管理C端用户、B端租户、用户分群</p>
+                <span class="text-xs text-[#165DFF]">点击进入 →</span>
+              </div>
+              <div class="nav-card bg-white rounded-lg p-4" onclick="showModal('订单管理系统 - 订单查询、退款处理、开票管理。支持多维度筛选，批量操作，导出对账报表。')">
+                <div class="flex items-center gap-3 mb-2">
+                  <div class="w-9 h-9 bg-green-50 rounded-lg flex items-center justify-center text-[#00B42A]"><i class="fas fa-file-invoice"></i></div>
+                  <span class="font-medium text-sm text-gray-800">订单管理系统</span>
+                </div>
+                <p class="text-xs text-gray-500 mb-2">订单查询、退款处理、开票管理</p>
+                <span class="text-xs text-[#165DFF]">点击进入 →</span>
+              </div>
+              <div class="nav-card bg-white rounded-lg p-4" onclick="showModal('商品管理系统 - SPU/SKU管理、兑换码生成。支持商品上下架、价格策略配置、库存预警。')">
+                <div class="flex items-center gap-3 mb-2">
+                  <div class="w-9 h-9 bg-purple-50 rounded-lg flex items-center justify-center text-purple-600"><i class="fas fa-boxes"></i></div>
+                  <span class="font-medium text-sm text-gray-800">商品管理系统</span>
+                </div>
+                <p class="text-xs text-gray-500 mb-2">SPU/SKU管理、兑换码生成</p>
+                <span class="text-xs text-[#165DFF]">点击进入 →</span>
+              </div>
+              <div class="nav-card bg-white rounded-lg p-4" onclick="showModal('运营管理系统 - 财务概览、用量看板、运营分析。可视化图表直观展示经营数据，支持自定义报表。')">
+                <div class="flex items-center gap-3 mb-2">
+                  <div class="w-9 h-9 bg-orange-50 rounded-lg flex items-center justify-center text-orange-600"><i class="fas fa-chart-bar"></i></div>
+                  <span class="font-medium text-sm text-gray-800">运营管理系统</span>
+                </div>
+                <p class="text-xs text-gray-500 mb-2">财务概览、用量看板、运营分析</p>
+                <span class="text-xs text-[#165DFF]">点击进入 →</span>
+              </div>
+              <div class="nav-card bg-white rounded-lg p-4" onclick="showModal('产品管理系统 - 产品线配置、功能配置。定义产品、服务、功能模块间的关联关系。')">
+                <div class="flex items-center gap-3 mb-2">
+                  <div class="w-9 h-9 bg-cyan-50 rounded-lg flex items-center justify-center text-cyan-600"><i class="fas fa-cubes"></i></div>
+                  <span class="font-medium text-sm text-gray-800">产品管理系统</span>
+                </div>
+                <p class="text-xs text-gray-500 mb-2">产品线配置、功能配置</p>
+                <span class="text-xs text-[#165DFF]">点击进入 →</span>
+              </div>
+              <!-- ★ 连线2：通知管理卡片 -->
+              <div class="nav-card bg-white rounded-lg p-4 proto-element" data-proto-id="2" onclick="showModal('通知管理系统 - 短信/邮件模板、发送任务。支持模板变量、定时发送、发送记录追踪。')">
+                <div class="flex items-center gap-3 mb-2">
+                  <div class="w-9 h-9 bg-pink-50 rounded-lg flex items-center justify-center text-pink-600"><i class="fas fa-envelope"></i></div>
+                  <span class="font-medium text-sm text-gray-800">通知管理系统</span>
+                </div>
+                <p class="text-xs text-gray-500 mb-2">短信/邮件模板、发送任务</p>
+                <span class="text-xs text-[#165DFF]">点击进入 →</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ★ 连线3：快捷操作区 -->
+          <div class="proto-element p-4 -ml-1 mt-2" data-proto-id="3">
+            <h3 class="text-base font-semibold text-gray-800 mb-3">快捷操作</h3>
+            <div class="grid grid-cols-3 gap-3">
+              <div class="quick-action bg-white rounded-lg p-3 flex items-center gap-3" onclick="showModal('快速创建新用户 - 填写用户基本信息（姓名、手机号、所属租户），一键完成注册并发送欢迎通知。')">
+                <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-[#165DFF]"><i class="fas fa-user-plus"></i></div>
+                <div>
+                  <div class="text-sm font-medium text-gray-700">创建用户</div>
+                  <div class="text-xs text-gray-400">快速添加新用户账号</div>
+                </div>
+              </div>
+              <div class="quick-action bg-white rounded-lg p-3 flex items-center gap-3" onclick="showModal('查看和处理订单 - 查看待处理退款申请、待开票订单，一键处理。')">
+                <div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center text-[#00B42A]"><i class="fas fa-search-dollar"></i></div>
+                <div>
+                  <div class="text-sm font-medium text-gray-700">查看订单</div>
+                  <div class="text-xs text-gray-400">处理退款和开票</div>
+                </div>
+              </div>
+              <div class="quick-action bg-white rounded-lg p-3 flex items-center gap-3" onclick="showModal('商品管理 - 管理SKU上下架、调整价格、生成兑换码。')">
+                <div class="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center text-purple-600"><i class="fas fa-tags"></i></div>
+                <div>
+                  <div class="text-sm font-medium text-gray-700">商品管理</div>
+                  <div class="text-xs text-gray-400">管理SKU和兑换码</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- 分隔线 -->
+    <div id="divider" class="w-px bg-gray-300"></div>
+
+    <!-- 右侧：功能说明文档 -->
+    <div id="right-panel" class="w-[21%] overflow-y-auto bg-[#fffef7] p-5 relative">
+      <div class="sticky top-0 bg-[#fffef7] pb-3 mb-4 border-b border-amber-200">
+        <h3 class="text-sm font-semibold text-amber-800 flex items-center gap-2">
+          <i class="fas fa-file-alt"></i> 功能说明
+        </h3>
+        <p class="text-xs text-amber-600 mt-1">悬停左侧界面元素或下方说明查看连线对应</p>
+      </div>
+
+      <!-- 说明1：系统导航 -->
+      <div class="proto-desc p-3 mb-3 text-sm" data-desc-id="1">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#165DFF] text-white text-xs font-bold">1</span>
+          <span class="font-medium text-gray-800">系统导航模块</span>
+        </div>
+        <p class="text-xs text-gray-600 leading-relaxed">工作台以卡片网格展示九大子系统入口。每个卡片包含图标、模块名称、功能简介和跳转链接，方便管理员快速定位功能。卡片支持 hover 上浮动效，点击可进入对应管理页面。</p>
+      </div>
+
+      <!-- 说明2：通知管理 -->
+      <div class="proto-desc p-3 mb-3 text-sm" data-desc-id="2">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#165DFF] text-white text-xs font-bold">2</span>
+          <span class="font-medium text-gray-800">通知管理模块</span>
+        </div>
+        <p class="text-xs text-gray-600 leading-relaxed">统一管理短信和邮件模板，支持变量替换（如用户名、订单号）。可创建定时发送任务，追踪送达率和打开率。帮助运营人员高效触达C端用户和B端客户。</p>
+      </div>
+
+      <!-- 说明3：快捷操作 -->
+      <div class="proto-desc p-3 mb-3 text-sm" data-desc-id="3">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#165DFF] text-white text-xs font-bold">3</span>
+          <span class="font-medium text-gray-800">快捷操作区</span>
+        </div>
+        <p class="text-xs text-gray-600 leading-relaxed">提供三个高频操作的快捷入口：创建用户、查看订单、商品管理。减少菜单导航层级，提升管理员日常操作效率。点击可弹出操作说明。</p>
+      </div>
+
+      <!-- 额外说明 -->
+      <div class="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+        <h4 class="text-xs font-semibold text-amber-800 mb-2">💡 原型说明</h4>
+        <ul class="text-xs text-amber-700 space-y-1.5 leading-relaxed">
+          <li>• 左侧为产品界面，模拟真实操作体验</li>
+          <li>• 右侧为功能文档，蓝色连线对应功能点</li>
+          <li>• 悬停连线编号或说明区可高亮对应元素</li>
+          <li>• 点击导航卡片查看功能说明弹窗</li>
+          <li>• 手机端自动切换上下布局</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- SVG 连线层 -->
+    <svg id="connections"></svg>
+  </div>
+
+  <!-- 模态框 -->
+  <div class="modal-overlay modal-hidden" id="modal">
+    <div class="modal-content">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-semibold text-gray-800">功能说明</h3>
+        <button class="text-gray-400 hover:text-gray-600 text-lg" onclick="hideModal()">&times;</button>
+      </div>
+      <p class="text-sm text-gray-600 leading-relaxed" id="modalContent"></p>
+      <div class="mt-5 flex justify-end">
+        <button class="btn-primary" onclick="hideModal()">知道了</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // ========== 连线计算逻辑 ==========
+  function updateConnections() {
+    const svg = document.getElementById('connections');
+    const leftPanel = document.getElementById('left-panel');
+    const rightPanel = document.getElementById('right-panel');
+    const rightRect = rightPanel.getBoundingClientRect();
+    const leftRect = leftPanel.getBoundingClientRect();
+
+    let html = '';
+    const pairs = [1, 2, 3];
+
+    pairs.forEach(num => {
+      const el = document.querySelector(`[data-proto-id="${num}"]`);
+      const desc = document.querySelector(`[data-desc-id="${num}"]`);
+      if (!el || !desc) return;
+
+      const elRect = el.getBoundingClientRect();
+      const descRect = desc.getBoundingClientRect();
+
+      const x1 = elRect.right - leftRect.left;
+      const y1 = elRect.top + elRect.height / 2 - leftRect.top;
+      const x2 = descRect.left - leftRect.left;
+      const y2 = descRect.top + descRect.height / 2 - leftRect.top;
+
+      const cx1 = x1 + (x2 - x1) * 0.4;
+      const cy1 = y1;
+      const cx2 = x1 + (x2 - x1) * 0.6;
+      const cy2 = y2;
+      const labelX = (x1 + x2) / 2;
+      const labelY = (y1 + y2) / 2;
+
+      html += `
+        <path d="M${x1},${y1} C${cx1},${cy1} ${cx2},${cy2} ${x2},${y2}"
+              class="connection-line" data-conn="${num}" />
+        <circle cx="${labelX}" cy="${labelY}" r="10" class="connection-label-bg" data-conn="${num}" />
+        <text x="${labelX}" y="${labelY}" class="connection-label" data-conn="${num}">${num}</text>
+      `;
+    });
+
+    svg.innerHTML = html;
+  }
+
+  // ========== 高亮逻辑 ==========
+  function highlightElement(num, active) {
+    document.querySelectorAll(`[data-proto-id="${num}"]`).forEach(el => el.classList.toggle('active-highlight', active));
+    document.querySelectorAll(`[data-desc-id="${num}"]`).forEach(el => el.classList.toggle('active-highlight', active));
+    document.querySelectorAll(`[data-conn="${num}"]`).forEach(el => el.classList.toggle('active', active));
+  }
+
+  // 左侧元素 hover
+  document.querySelectorAll('[data-proto-id]').forEach(el => {
+    el.addEventListener('mouseenter', () => highlightElement(el.dataset.protoId, true));
+    el.addEventListener('mouseleave', () => highlightElement(el.dataset.protoId, false));
+  });
+
+  // 右侧说明 hover
+  document.querySelectorAll('[data-desc-id]').forEach(el => {
+    el.addEventListener('mouseenter', () => highlightElement(el.dataset.descId, true));
+    el.addEventListener('mouseleave', () => highlightElement(el.dataset.descId, false));
+  });
+
+  // ========== 模态框 ==========
+  function showModal(text) {
+    document.getElementById('modalContent').textContent = text;
+    document.getElementById('modal').classList.remove('modal-hidden');
+  }
+  function hideModal() {
+    document.getElementById('modal').classList.add('modal-hidden');
+  }
+  document.getElementById('modal').addEventListener('click', function(e) {
+    if (e.target === this) hideModal();
+  });
+
+  // ========== 侧边栏菜单切换 ==========
+  document.querySelectorAll('.sidebar-item').forEach(item => {
+    item.addEventListener('click', function() {
+      document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+      document.querySelectorAll('.sidebar-item i').forEach(i => i.style.color = '');
+      this.classList.add('active');
+      const icon = this.querySelector('i');
+      if (icon) icon.style.color = '#165DFF';
+    });
+  });
+
+  // ========== 顶部标签切换 ==========
+  document.querySelectorAll('.topnav-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.topnav-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  // ========== 响应式移动端视图切换 ==========
+  let mobileDocVisible = true;
+  window.toggleMobileView = function() {
+    const right = document.getElementById('right-panel');
+    mobileDocVisible = !mobileDocVisible;
+    right.style.display = mobileDocVisible ? 'block' : 'none';
+    document.getElementById('mobileToggle').innerHTML = mobileDocVisible
+      ? '<i class="fas fa-info"></i>'
+      : '<i class="fas fa-eye"></i>';
+  };
+
+  // ========== 初始化和窗口监听 ==========
+  window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(updateConnections, 300);
+  });
+  window.addEventListener('load', updateConnections);
+  window.addEventListener('resize', updateConnections);
+</script>
+</body>
+</html>
