@@ -1,0 +1,1 @@
+# Cola Pages\n\nStatic pages deployed by Cola.
