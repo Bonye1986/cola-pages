@@ -473,48 +473,9 @@
 
         <!-- Right Doc Panel -->
         <div class="right-panel" id="rightPanel">
-          <h3><i class="fas fa-file-alt"></i> 功能说明</h3>
-          <p style="font-size:12px;color:#a16207;margin-bottom:16px">悬停左侧元素查看连线对应</p>
-
-          <div class="proto-desc" data-desc-id="1" style="padding:10px;margin-bottom:10px;font-size:12px">
-            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
-              <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#165DFF;color:#fff;font-size:11px;font-weight:bold;flex-shrink:0">1</span>
-              <span style="font-weight:600;color:#333">系统导航</span>
-            </div>
-            <p style="color:#666;line-height:1.5">工作台以卡片展示9大子系统入口。每个卡片包含图标、名称和功能简介，点击可跳转到对应管理页面。</p>
-          </div>
-
-          <div class="proto-desc" data-desc-id="2" style="padding:10px;margin-bottom:10px;font-size:12px">
-            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
-              <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#165DFF;color:#fff;font-size:11px;font-weight:bold;flex-shrink:0">2</span>
-              <span style="font-weight:600;color:#333">通知管理</span>
-            </div>
-            <p style="color:#666;line-height:1.5">统一管理短信和邮件模板，支持变量替换。可创建定时发送任务，追踪送达率和打开率。</p>
-          </div>
-
-          <div class="proto-desc" data-desc-id="3" style="padding:10px;margin-bottom:10px;font-size:12px">
-            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
-              <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#165DFF;color:#fff;font-size:11px;font-weight:bold;flex-shrink:0">3</span>
-              <span style="font-weight:600;color:#333">快捷操作</span>
-            </div>
-            <p style="color:#666;line-height:1.5">三个高频操作入口：创建用户、查看订单、商品管理。减少菜单导航层级，提升日常操作效率。</p>
-          </div>
-
-          <div style="margin-top:12px;padding:10px;background:#fef3c7;border-radius:6px;border:1px solid #fde68a">
-            <h4 style="font-size:11px;font-weight:600;color:#92400e;margin-bottom:6px">📋 已串联页面</h4>
-            <ul style="font-size:11px;color:#a16207;line-height:1.8;list-style:none;padding:0">
-              <li>✅ 工作台（首页仪表盘）</li>
-              <li>✅ 用户管理 → 用户列表</li>
-              <li>✅ 订单管理 → 订单列表</li>
-              <li>✅ 商品管理 → SKU管理</li>
-              <li>✅ 运营管理 → 财务概览</li>
-              <li>✅ 成员与权限 → 成员管理</li>
-              <li>✅ 产品 → 产品列表 / API模型</li>
-              <li>✅ 通知 → 模板管理 / 发送任务</li>
-              <li>✅ 操作日志 / 询盘管理</li>
-              <li style="color:#65a30d">🔗 共 28 个页面全部可导航</li>
-            </ul>
-          </div>
+          <h3 id="docPanelTitle"><i class="fas fa-file-alt"></i> 功能说明</h3>
+          <p style="font-size:12px;color:#a16207;margin-bottom:16px" id="docPanelHint">悬停左侧元素查看连线对应</p>
+          <div id="docPanelContent"></div>
         </div>
 
         <!-- SVG Connections Overlay -->
@@ -525,39 +486,56 @@
 </div>
 
 <script>
+  // ========== Page Documentation Content ==========
+  const pageDocs = {
+    home: { title: '工作台 — 功能说明', hint: '悬停左侧卡片区域查看连线对应', items: [{ num: 1, label: '系统导航', desc: '工作台以卡片网格展示9大子系统入口。每个卡片包含图标、名称和功能简介，点击可进入对应管理页面。' },{ num: 2, label: '通知管理', desc: '统一管理短信和邮件模板，支持变量替换。可创建定时发送任务，追踪送达率和打开率。' },{ num: 3, label: '快捷操作', desc: '三个高频操作快捷入口：创建用户、查看订单、商品管理。减少菜单导航层级，提升管理员日常操作效率。' }]},
+    'user-list': { title: '用户列表 — 功能说明', hint: 'C端用户全生命周期管理', items: [{ label: '用户查询', desc: '支持按姓名、手机号模糊搜索，按激活状态筛选。支持批量导入导出用户数据。' },{ label: '用户操作', desc: '查看用户详情、禁用/启用账号。禁用后用户无法登录和使用任何服务。' },{ label: '数据字段', desc: '展示姓名、手机号（脱敏）、所属租户、激活状态、注册时间等核心字段。' }]},
+    'order-list': { title: '订单列表 — 功能说明', hint: '订单全流程管理', items: [{ label: '订单查询', desc: '支持按订单号、用户手机号搜索，按订单状态、日期范围筛选。支持导出对账报表。' },{ label: '订单处理', desc: '查看订单详情，处理退款申请。退款需审核通过后原路返回。' },{ label: '状态流转', desc: '待支付→已完成→已退款。每个状态变更记录操作人和时间。' }]},
+    'sku-list': { title: 'SKU管理 — 功能说明', hint: '商品库存与价格管理', items: [{ label: 'SKU编码', desc: '每个SKU有唯一编码，关联所属SPU。支持批量导入SKU数据。' },{ label: '价格管理', desc: '设置SKU售价，支持多级定价策略。下架后用户端不再展示。' },{ label: '库存管理', desc: '9999表示不限库存，实际库存实时扣减。低于阈值可设置预警通知。' }]},
+    'finance-overview': { title: '财务概览 — 功能说明', hint: '营收数据与趋势分析', items: [{ label: '收入统计', desc: '展示本月收入、退款金额、退款率。与上月对比展示增长率。' },{ label: '待开票管理', desc: '显示待处理的开票申请数量和金额。支持批量开票操作。' },{ label: '收入趋势', desc: '以柱状图展示近7天收入变化趋势。帮助运营快速判断业务走势。' }]},
+    'tenant-list': { title: '租户列表 — 功能说明', hint: 'B端租户全生命周期管理', items: [{ label: '租户管理', desc: '管理B端企业租户，包括租户名称、管理员、用户数、开通时间等。' },{ label: '状态控制', desc: '支持激活/停用租户。停用后该租户下所有用户无法使用服务。' }]},
+    'members-list': { title: '成员管理 — 功能说明', hint: '后台管理员账户管理', items: [{ label: '角色分配', desc: '超级管理员拥有全部权限，运营主管和客服按角色限制功能访问。' },{ label: '成员操作', desc: '新增/编辑成员信息，分配手机号和角色。离职成员可禁用账号。' }]},
+    'product-list': { title: '产品列表 — 功能说明', hint: '产品线与功能模块管理', items: [{ label: '产品线', desc: '定义核心产品、数据产品、基础服务等产品线分类。' },{ label: '状态管理', desc: '启用/停用产品。停用后相关功能和页面在前端不再展示。' }]},
+    'roles-list': { title: '角色管理 — 功能说明', hint: '权限角色配置', items: [{ label: '角色定义', desc: '定义角色名称和权限集合。权限控制到页面级别和操作级别。' },{ label: '成员分配', desc: '查看每个角色下的成员数量，编辑角色权限配置。' }]},
+    'operation-logs': { title: '操作日志 — 功能说明', hint: '系统操作审计追踪', items: [{ label: '日志范围', desc: '记录所有管理后台操作：用户管理、订单处理、商品变更等。' },{ label: '查询筛选', desc: '支持按操作人、日期范围筛选。每页20条，支持翻页浏览。' }]},
+    inquiries: { title: '询盘管理 — 功能说明', hint: '客户线索跟进', items: [{ label: '线索来源', desc: '记录客户来源渠道（官网、推荐等），分配跟进人。' },{ label: '跟进状态', desc: '已跟进/待跟进双状态管理。支持查看跟进记录和详情。' }]},
+    templates: { title: '模板管理 — 功能说明', hint: '短信/邮件模板配置', items: [{ label: '模板类型', desc: '支持短信和邮件两种模板类型。模板支持变量替换。' },{ label: '模板操作', desc: '新建、编辑模板。启用状态的模板可在发送任务中选用。' }]},
+    'send-tasks': { title: '发送任务 — 功能说明', hint: '批量消息发送管理', items: [{ label: '任务创建', desc: '选择模板、目标用户群，创建定时或立即发送任务。' },{ label: '进度追踪', desc: '查看发送进度、成功数、失败数。支持失败重试。' }]}
+  };
+  const defaultDoc = { title: '功能说明', hint: '当前页面简要说明', items: [{ label: '页面概览', desc: '该页面为系统管理功能模块，提供数据的查看、筛选和管理操作。' }] };
+
+  function renderDocPanel(pageId) {
+    const doc = pageDocs[pageId] || defaultDoc;
+    const container = document.getElementById('docPanelContent');
+    document.getElementById('docPanelTitle').innerHTML = '<i class="fas fa-file-alt"></i> ' + doc.title;
+    document.getElementById('docPanelHint').textContent = doc.hint;
+    let html = '';
+    doc.items.forEach((item, idx) => {
+      const num = item.num || (idx + 1);
+      html += '<div class="proto-desc" style="padding:10px;margin-bottom:10px;font-size:12px"' + (item.num ? ' data-desc-id="' + item.num + '"' : '') + '><div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#165DFF;color:#fff;font-size:11px;font-weight:bold;flex-shrink:0">' + num + '</span><span style="font-weight:600;color:#333;font-size:13px">' + item.label + '</span></div><p style="color:#666;line-height:1.5;font-size:12px">' + item.desc + '</p></div>';
+    });
+    container.innerHTML = html;
+    document.querySelectorAll('[data-desc-id]').forEach(el => { el.addEventListener('mouseenter', () => highlightElement(el.dataset.descId, true)); el.addEventListener('mouseleave', () => highlightElement(el.dataset.descId, false)); });
+    setTimeout(updateConnections, 150);
+  }
+
   // ========== Page Switching ==========
   function switchPage(pageId, breadcrumb, menuEl) {
-    // Update breadcrumb
     document.getElementById('breadcrumbCurrent').textContent = breadcrumb;
-    
-    // Hide all pages, show target
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const target = document.getElementById('page-' + pageId);
     if (target) target.classList.add('active');
-    
-    // Update menu active state
     if (menuEl) {
       document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
       menuEl.classList.add('active');
-    }
-    
-    // Auto-expand parent group
-    if (menuEl) {
       const group = menuEl.closest('.menu-group');
       if (group) {
         const children = group.querySelector('.menu-group-children');
         const header = group.querySelector('.menu-group-header');
-        if (children && !children.classList.contains('open')) {
-          children.classList.add('open');
-          header.classList.add('expanded');
-        }
+        if (children && !children.classList.contains('open')) { children.classList.add('open'); if (header) header.classList.add('expanded'); }
       }
     }
-    
-    // Update connections
-    setTimeout(updateConnections, 100);
-    
-    // Scroll content to top
+    renderDocPanel(pageId);
     document.getElementById('pageContainer').scrollTop = 0;
   }
 
@@ -653,7 +631,7 @@
   };
 
   // ========== Init ==========
-  window.addEventListener('DOMContentLoaded', () => setTimeout(updateConnections, 400));
+  window.addEventListener('DOMContentLoaded', () => { setTimeout(updateConnections, 400); renderDocPanel('home'); });
   window.addEventListener('load', updateConnections);
   window.addEventListener('resize', updateConnections);
 
