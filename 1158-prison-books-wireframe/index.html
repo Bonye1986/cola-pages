@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>1158-05-14 新零售七期 · 监狱选书 用户端线框图（微信小程序）</title>
+<style>
+  body{margin:0;padding:24px;background:#f5f5f5;font-family:"PingFang SC","Microsoft YaHei",sans-serif;color:#222;}
+  h1{font-size:18px;margin:0 0 4px;}
+  .meta{font-size:12px;color:#666;margin-bottom:8px;}
+  .banner{background:#333;color:#fff;font-size:12px;padding:6px 10px;display:inline-block;margin-bottom:20px;}
+  .flow{background:#fff;border:1px solid #999;padding:10px 14px;font-size:12px;margin-bottom:24px;line-height:1.9;max-width:1200px;}
+  .frames{display:flex;flex-wrap:wrap;gap:28px;max-width:1400px;}
+  .frame-wrap{width:395px;}
+  .frame-title{font-size:13px;font-weight:bold;margin-bottom:6px;}
+  .phone{width:375px;min-height:640px;background:#fff;border:2px solid #222;position:relative;display:flex;flex-direction:column;}
+  .statusbar{border-bottom:1px solid #999;font-size:10px;color:#666;padding:3px 10px;display:flex;justify-content:space-between;}
+  .navbar{border-bottom:1px solid #222;padding:10px;text-align:center;font-size:14px;font-weight:bold;background:#eee;}
+  .body{flex:1;padding:12px;font-size:12px;}
+  .tabbar{border-top:1px solid #222;display:flex;background:#eee;}
+  .tabbar div{flex:1;text-align:center;padding:8px 0;font-size:11px;color:#666;}
+  .tabbar .on{color:#000;font-weight:bold;border-top:2px solid #000;}
+  .field{border:1px solid #222;padding:8px;margin-bottom:10px;background:#fff;}
+  .field .ph{color:#999;}
+  .lbl{font-size:11px;color:#444;margin-bottom:4px;}
+  .btn{border:1px solid #222;background:#ddd;text-align:center;padding:10px;font-size:13px;margin-top:10px;}
+  .btn.pri{background:#222;color:#fff;}
+  .btn.dis{background:#eee;color:#999;border-color:#bbb;}
+  .box{border:1px solid #222;padding:8px;margin-bottom:10px;}
+  .gray{background:#f0f0f0;}
+  .note{font-size:11px;color:#666;line-height:1.6;}
+  .tag{display:inline-block;border:1px solid #222;font-size:10px;padding:1px 4px;margin-left:4px;}
+  .cats{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+  .cats span{border:1px solid #222;padding:3px 8px;font-size:11px;}
+  .cats .on{background:#222;color:#fff;}
+  .book{display:flex;gap:8px;border:1px solid #222;padding:8px;margin-bottom:8px;}
+  .cover{width:56px;height:76px;border:1px solid #666;background:#eee;display:flex;align-items:center;justify-content:center;font-size:10px;color:#888;flex-shrink:0;}
+  .searchbar{border:1px solid #222;padding:7px;color:#999;margin-bottom:10px;font-size:11px;}
+  .idbar{border:1px solid #222;background:#f0f0f0;padding:6px 8px;font-size:11px;margin-bottom:10px;display:flex;justify-content:space-between;}
+  .steps{font-size:11px;color:#666;}
+  .steps div{border-left:2px solid #222;padding:2px 0 2px 8px;margin-bottom:6px;}
+  .anno{font-size:11px;color:#444;line-height:1.7;margin-top:8px;border:1px dashed #999;padding:8px;background:#fff;}
+  .anno b{font-size:11px;}
+  table{border-collapse:collapse;width:100%;font-size:11px;}
+  td,th{border:1px solid #666;padding:4px 6px;text-align:left;}
+  .kv{display:flex;justify-content:space-between;border-bottom:1px dashed #ccc;padding:5px 0;font-size:11px;}
+  .toast{border:1px solid #222;background:#fff;padding:10px;text-align:center;font-size:11px;margin-top:8px;}
+</style>
+</head>
+<body>
+<h1>监狱选书 · 用户端线框图（微信小程序）</h1>
+<div class="meta">项目：1158-05-14 长沙市新华书店-新零售-七期 ｜ 版本：V0.1 ｜ 日期：2026-08-04</div>
+<div class="banner">线框图 · 仅供布局参考 · 纯黑白灰 · 不含视觉设计</div>
+
+<div class="flow">
+<b>主流程：</b>扫监狱专区二维码 → F1 身份核验（犯人姓名+编号，自动匹配监狱）→ F2 选书专区（分类筛选/搜索监狱书）→ F3 书籍详情 → F4 订单确认（免填地址、自动匹配监狱、限购校验）→ 微信支付 → F5 支付成功 → F6/F7 监狱订单查询（独立于平台订单）<br>
+<b>入口约束：</b>专区仅通过扫码进入，小程序内无常规入口（F1 即扫码落地页）
+</div>
+
+<div class="frames">
+
+<!-- F1 -->
+<div class="frame-wrap">
+<div class="frame-title">F1 身份核验页（扫码落地页）</div>
+<div class="phone">
+<div class="statusbar"><span>9:41</span><span>监狱选书专区</span><span>▮▮▮</span></div>
+<div class="navbar">监狱选书专区</div>
+<div class="body">
+  <div class="note" style="margin-bottom:12px;">进入选书专区前，请先填写犯人信息完成核验。书籍专区为监狱专供，仅限已登记人员使用。</div>
+  <div class="lbl">犯人姓名</div>
+  <div class="field"><span class="ph">请输入犯人姓名</span></div>
+  <div class="lbl">犯人编号</div>
+  <div class="field"><span class="ph">请输入犯人编号</span></div>
+  <div class="lbl">归属监狱（核验后自动带出，不可修改）</div>
+  <div class="field gray"><span class="ph">— —</span></div>
+  <div class="btn pri">核验并进入选书</div>
+  <div class="toast">〔异常态〕核验失败：未查询到该犯人信息，请检查姓名与编号是否一致</div>
+</div>
+</div>
+<div class="anno"><b>规则：</b>① 姓名+编号与后台导入数据一致才通过，编号自动对应监狱名称；② 核验通过进入 F2，监狱信息随身份带入整个会话；③ 是否记忆核验结果见澄清问题 Q1</div>
+</div>
+
+<!-- F2 -->
+<div class="frame-wrap">
+<div class="frame-title">F2 选书专区首页</div>
+<div class="phone">
+<div class="statusbar"><span>9:41</span><span>监狱选书专区</span><span>▮▮▮</span></div>
+<div class="navbar">选书专区</div>
+<div class="body">
+  <div class="idbar"><span>当前身份：张某某 ｜ 湖南省XX监狱</span><span>本月剩余可购：3 本</span></div>
+  <div class="searchbar">🔍 搜索监狱专供书籍名称（不搜索平台常规商品）</div>
+  <div class="cats"><span class="on">全部</span><span>文学</span><span>历史</span><span>法律</span><span>科技</span><span>健康</span></div>
+  <div class="book"><div class="cover">封面</div><div>《书名》<span class="tag">预售</span><br><span class="note">作者</span><br><b>￥39.00</b></div></div>
+  <div class="book"><div class="cover">封面</div><div>《书名》<span class="tag">预售</span><br><span class="note">作者</span><br><b>￥28.50</b></div></div>
+  <div class="book"><div class="cover">封面</div><div>《书名》<span class="tag">预售</span><br><span class="note">作者</span><br><b>￥45.00</b></div></div>
+  <div class="note">— 已加载全部 / 上拉加载更多 —</div>
+</div>
+<div class="tabbar"><div class="on">选书专区</div><div>监狱订单</div></div>
+</div>
+<div class="anno"><b>规则：</b>① 分类为后台独立管理的监狱书籍分类，所有监狱统一；② 搜索仅命中监狱专供书；③ 顶部常驻身份条与本月剩余可购数（限购 3 本/月）</div>
+</div>
+
+<!-- F3 -->
+<div class="frame-wrap">
+<div class="frame-title">F3 书籍详情页</div>
+<div class="phone">
+<div class="statusbar"><span>9:41</span><span>监狱选书专区</span><span>▮▮▮</span></div>
+<div class="navbar">书籍详情</div>
+<div class="body">
+  <div style="display:flex;gap:10px;">
+    <div class="cover" style="width:90px;height:120px;">封面</div>
+    <div><b>《书名》</b><span class="tag">预售</span><br><span class="note">作者：XXX ｜ 出版社</span><br><br><b style="font-size:15px;">￥39.00</b></div>
+  </div>
+  <div class="box gray" style="margin-top:10px;">
+    <b>购买须知</b>
+    <div class="note">· 预售商品，根据发货安排发出，发货时间以实际为准<br>· 仅支持微信支付<br>· 不支持售后、不支持退款<br>· 收货地址按犯人归属监狱自动匹配，无需填写</div>
+  </div>
+  <div class="lbl">内容简介</div>
+  <div class="note" style="border:1px solid #ccc;padding:8px;">书籍简介文字区域……</div>
+</div>
+<div style="padding:10px;border-top:1px solid #222;display:flex;gap:8px;">
+  <div class="btn" style="flex:1;margin:0;">返回</div>
+  <div class="btn pri" style="flex:2;margin:0;">立即下单</div>
+</div>
+</div>
+<div class="anno"><b>规则：</b>① 预售、仅微信支付、无售后无退款三条在下单前显性告知；② 立即下单前校验本月剩余额度，超限提示（见 F4）</div>
+</div>
+
+<!-- F4 -->
+<div class="frame-wrap">
+<div class="frame-title">F4 订单确认页</div>
+<div class="phone">
+<div class="statusbar"><span>9:41</span><span>监狱选书专区</span><span>▮▮▮</span></div>
+<div class="navbar">确认订单</div>
+<div class="body">
+  <div class="box">
+    <div class="lbl">收货地址（系统自动匹配，无需填写）</div>
+    <b>湖南省XX监狱</b>
+    <div class="note">收货人：张某某 ｜ 按犯人归属监狱自动匹配</div>
+  </div>
+  <div class="box">
+    <table><tr><td width="40">封面</td><td>《书名》<br><span class="note">预售</span></td><td>￥39.00</td></tr></table>
+  </div>
+  <div class="kv"><span>商品金额</span><span>￥39.00</span></div>
+  <div class="kv"><span>运费</span><span>￥0.00（待确认，见 Q6）</span></div>
+  <div class="kv"><span>本月剩余可购</span><span>3 本（本单 1 本）</span></div>
+  <div class="kv"><b>合计</b><b>￥39.00</b></div>
+  <div class="box gray" style="margin-top:10px;">
+    <div class="lbl">支付方式</div>
+    微信支付（唯一）<span class="note">｜不支持其他支付方式</span>
+  </div>
+  <div class="toast">〔异常态〕提交超限：本单将超出本月 3 本限购，请减少数量</div>
+</div>
+<div style="padding:10px;border-top:1px solid #222;display:flex;justify-content:space-between;align-items:center;">
+  <b>合计：￥39.00</b><div class="btn pri" style="margin:0;width:130px;">微信支付</div>
+</div>
+</div>
+<div class="anno"><b>规则：</b>① 无地址填写环节；② 支付即校验限购（建议口径：支付成功才占用额度，见 Q3）；③ 仅微信支付，点击即拉起微信支付</div>
+</div>
+
+<!-- F5 -->
+<div class="frame-wrap">
+<div class="frame-title">F5 支付成功页</div>
+<div class="phone">
+<div class="statusbar"><span>9:41</span><span>监狱选书专区</span><span>▮▮▮</span></div>
+<div class="navbar">支付结果</div>
+<div class="body" style="text-align:center;padding-top:50px;">
+  <div style="font-size:36px;">✓</div>
+  <b style="font-size:15px;">支付成功</b>
+  <div class="note" style="margin:10px 30px;">订单已提交。本单为预售商品，将根据发货安排尽快发出，发货后不可退款、不支持售后。</div>
+  <div class="btn pri">查看监狱订单</div>
+  <div class="btn">继续选书</div>
+</div>
+</div>
+<div class="anno"><b>规则：</b>① 再次显性提示预售与无售后；② 订单进入后台"监狱订单"独立管理队列，状态初始为"待发货"</div>
+</div>
+
+<!-- F6 -->
+<div class="frame-wrap">
+<div class="frame-title">F6 我的监狱订单（列表）</div>
+<div class="phone">
+<div class="statusbar"><span>9:41</span><span>监狱选书专区</span><span>▮▮▮</span></div>
+<div class="navbar">监狱订单</div>
+<div class="body">
+  <div class="note" style="margin-bottom:8px;">监狱订单独立管理，与平台常规订单互不相通</div>
+  <div class="box"><div class="kv"><span>订单号：20260804001</span><span>待发货</span></div>《书名》等 2 本 ｜ ￥67.50<br><span class="note">2026-08-04 10:21 支付</span></div>
+  <div class="box"><div class="kv"><span>订单号：20260712003</span><span>已发货</span></div>《书名》 ｜ ￥39.00<br><span class="note">2026-07-12 15:03 支付 ｜ 物流单号：SF123…（见 Q7）</span></div>
+  <div class="box"><div class="kv"><span>订单号：20260701001</span><span>已完成</span></div>《书名》 ｜ ￥28.50<br><span class="note">2026-07-01 09:40 支付</span></div>
+</div>
+<div class="tabbar"><div>选书专区</div><div class="on">监狱订单</div></div>
+</div>
+<div class="anno"><b>规则：</b>① 订单状态：待发货 → 已发货 → 已完成（见 Q7）；② 无"申请售后/退款"入口；③ 点击订单进 F7</div>
+</div>
+
+<!-- F7 -->
+<div class="frame-wrap">
+<div class="frame-title">F7 订单详情页</div>
+<div class="phone">
+<div class="statusbar"><span>9:41</span><span>监狱选书专区</span><span>▮▮▮</span></div>
+<div class="navbar">订单详情</div>
+<div class="body">
+  <div class="box gray"><b>待发货</b><div class="note">预售商品，将根据发货安排尽快发出</div></div>
+  <div class="steps">
+    <div>提交订单　2026-08-04 10:20</div>
+    <div>支付成功　2026-08-04 10:21</div>
+    <div style="color:#999;">等待发货</div>
+  </div>
+  <div class="box"><table><tr><td width="40">封面</td><td>《书名》<span class="tag">预售</span></td><td>￥39.00</td></tr></table></div>
+  <div class="kv"><span>收货信息</span><span>湖南省XX监狱 ｜ 张某某</span></div>
+  <div class="kv"><span>支付方式</span><span>微信支付</span></div>
+  <div class="kv"><span>实付款</span><b>￥39.00</b></div>
+  <div class="note" style="margin-top:8px;">· 预售商品不支持售后与退款</div>
+</div>
+</div>
+<div class="anno"><b>规则：</b>① 收货信息展示自动匹配的监狱；② 无任何售后操作按钮</div>
+</div>
+
+</div>
+</body>
+</html>
